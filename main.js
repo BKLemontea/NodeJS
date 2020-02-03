@@ -62,7 +62,12 @@ var app = http.createServer(function(request,response){
               title, 
               list, 
               `<h2>${title}</h2>${description}`,
-              `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`
+              `<a href="/create">create</a>
+              <a href="/update?id=${title}">update</a>
+              <form action="/delete_process" method="post">
+                <input type="hidden" name ="id" value="${title}">
+                <input type="submit" value="delete">
+              </form>`
               );
             response.writeHead(200);
             //fs.readFile(__dirname + _url) : 사용자가 접속한 url에 따라서 해당 파일들을 읽어줌
@@ -137,6 +142,19 @@ var app = http.createServer(function(request,response){
             response.writeHead(302, {Location:`/?id=${title}`});
             response.end();
           })
+        });
+      });
+    } else if(pathname === '/delete_process') {
+      var body = '';
+      request.on('data', function(data){
+        body += data;
+      });
+      request.on('end', function(){
+        var post = qs.parse(body);
+        var id = post.id;
+        fs.unlink(`${fileDir}/${id}`, function(erroe){
+          response.writeHead(302, {Location:`/`});
+          response.end();
         })
       });
     } else {
