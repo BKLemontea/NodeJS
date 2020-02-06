@@ -3,6 +3,7 @@ var fs = require('fs');
 var url = require('url'); // require('url') : url 이라는 Module을 사용할 것이다.
 var qs = require('querystring');
 var template = require('./lib/template.js');
+var path = require('path');
 const fileDir = './Data';
 
 var app = http.createServer(function(request,response){
@@ -27,7 +28,8 @@ var app = http.createServer(function(request,response){
         });
       } else{
         fs.readdir(fileDir, function(error, fileList){
-          fs.readFile(`data/${queryData.id}`, 'utf-8', function(err, description){
+          var filteredID = path.parse(queryData.id).base;
+          fs.readFile(`data/${filteredID}`, 'utf-8', function(err, description){
             var title = queryData.id;
             var list = template.List(fileList);
             var html = template.HTML(
@@ -79,7 +81,8 @@ var app = http.createServer(function(request,response){
       });
     } else if(pathname === '/update') {
       fs.readdir(fileDir, function(error, fileList){
-        fs.readFile(`data/${queryData.id}`, 'utf-8', function(err, description){
+        var filteredID = path.parse(queryData.id).base;
+        fs.readFile(`data/${filteredID}`, 'utf-8', function(err, description){
           var title = queryData.id;
           var list = template.List(fileList);
           var html = template.HTML(
@@ -123,8 +126,8 @@ var app = http.createServer(function(request,response){
       });
       request.on('end', function(){
         var post = qs.parse(body);
-        var id = post.id;
-        fs.unlink(`${fileDir}/${id}`, function(erroe){
+        var filteredID = path.parse(post.id).base;
+        fs.unlink(`${fileDir}/${filteredID}`, function(erroe){
           response.writeHead(302, {Location:`/`});
           response.end();
         })
