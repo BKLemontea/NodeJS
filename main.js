@@ -4,6 +4,7 @@ var url = require('url'); // require('url') : url 이라는 Module을 사용할 
 var qs = require('querystring');
 var template = require('./lib/template.js');
 var path = require('path');
+var sanitizeHtml = require('sanitize-html');
 const fileDir = './Data';
 
 var app = http.createServer(function(request,response){
@@ -31,15 +32,19 @@ var app = http.createServer(function(request,response){
           var filteredID = path.parse(queryData.id).base;
           fs.readFile(`data/${filteredID}`, 'utf-8', function(err, description){
             var title = queryData.id;
+            var sanitizedTitle = sanitizeHtml(title);
+            var sanitizedDescription = sanitizeHtml(description, {
+              allowedTags:['h1']
+            }); // 소독의 개념이다. 특정 태그들을 삭제함. allowedTags를 사용하여 특정 태그는 허용할 수 있다.
             var list = template.List(fileList);
             var html = template.HTML(
               title, 
               list, 
-              `<h2>${title}</h2>${description}`,
+              `<h2>${sanitizedTitle}</h2>${sanitizedDescription}`,
               `<a href="/create">create</a>
-              <a href="/update?id=${title}">update</a>
+              <a href="/update?id=${sanitizedTitle}">update</a>
               <form action="/delete_process" method="post">
-                <input type="hidden" name ="id" value="${title}">
+                <input type="hidden" name ="id" value="${sanitizedTitle}">
                 <input type="submit" value="delete">
               </form>`
               );

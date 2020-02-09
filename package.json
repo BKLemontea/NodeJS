@@ -1,0 +1,25 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "출처 : https://opentutorials.org/module/3549",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BKLemontea/NodeJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BKLemontea/NodeJS/issues"
+  },
+  "homepage": "https://github.com/BKLemontea/NodeJS#readme",
+  "dependencies": {
+    "sanitize-html": "^1.21.1"
+  }
+}
